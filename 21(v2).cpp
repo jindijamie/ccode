@@ -91,9 +91,9 @@ int main()
  
 bool input_and_check()                                                 //get the input and check it, return'y' or'n'
  {
- 	char a[2];
+ 	char a[20];
  	
- 	while (cin.getline(a,2))
+ 	while (cin.getline(a,20))
 	 {
 	 	try
 	 	{
