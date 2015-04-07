@@ -91,14 +91,14 @@ int main()
  
 bool input_and_check()                                                 //get the input and check it, return'y' or'n'
  {
- 	char a[10];
+ 	char a[2];
  	
  	while (cin.getline(a,2))
 	 {
 	 	try
 	 	{
 	 		if ((a[0]!='y' && a[0]!='n') || (a[1] != '\0' && a[1]!= '\n')) throw 1;
-	 		cin.clear();
+	 		cin.sync();
 	 		return (a[0]=='n');
 	 	}
 	 	catch(int)
