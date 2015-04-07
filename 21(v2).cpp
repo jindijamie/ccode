@@ -9,7 +9,7 @@ int give_out_card(int allcard[52],int card);
 void print_card(int card);
 void print_cards(int cards[22],int start, int end);
 bool judge(float sum);
-int final_judge(float computer_sum, float player_sum, int computer_number, int player_number);
+void final_judge(float computer_sum, float player_sum, int computer_number, int player_number);
 bool input_and_check();
 
 
@@ -21,7 +21,6 @@ int main()
 	int player_card_number = 0,computer_card_number = 0;
 	float player_sum = 0,computer_sum = 0;
 	int card;
-	char whether_card;
 	
 	for(int i=0;i<52;i++) allcard[i]=i+1;
 	
@@ -31,10 +30,8 @@ int main()
 		cout << "want to play the game?(y/n)";                                  //initialization
 		if (input_and_check()) break;
 		wash(allcard);
-		player_card_number = 0;
-		computer_card_number = 0;
-		player_sum = 0;
-		computer_sum = 0;
+		player_card_number = computer_card_number = player_sum = computer_sum = 0;
+		flag=0;
 		
 		cout<<"player turn" << endl;                                     //deal 2 cards out and print it
 		cout<<"player get the cards: " << endl;
@@ -47,18 +44,11 @@ int main()
 			player_card_number++;
 		}
 		cout<<endl<<"sum: "<<player_sum<<endl;
-			
-		if (judge(player_sum))                                            //check whether the player busts
-		{
-			cout << " you lose" << endl;
-			continue;
-		}
-			
 
 		while (1)
 		{
 			flag = 0;
-			cout << " another card?(y/n)";                                //take an additional card or get a 'hit'
+			cout << "another card?(y/n)";                                //take an additional card or get a 'hit'
 			if (input_and_check()) break;
 			card = allcard[player_card_number];
 			if (card % 13 > 10 || card % 13 == 0) player_sum += 0.5;
@@ -75,11 +65,7 @@ int main()
 				
 		}
 		
-		if (flag) 
-		{
-			flag=0;
-			continue;
-		}
+		if (flag) continue;
 		while (computer_sum < player_sum)                                 //dealer's turn
 		{
 			card=allcard[computer_card_number + player_card_number-1];                     //get an additional card if the number doesn't exceed the player's
@@ -90,24 +76,16 @@ int main()
 			if (judge(computer_sum)) 
 			{
 				print_cards(allcard,player_card_number, computer_card_number-1);
-				cout << "computer busts!" << "you win" << endl;                          //check whether the dealer busts
+				cout << "computer busts!" << "you win" << endl << endl;                          //check whether the dealer busts
 				flag = 1;
 				break;				
 			}
 		}
-		if (flag) 
-		{
-			flag=0;
-		    continue;
-	    }
+		if (flag) continue;
 		print_cards(allcard,player_card_number,computer_card_number-1);
-		cout << endl << "sum: " << computer_sum;
-		switch(final_judge(computer_sum, player_sum, computer_card_number, player_card_number))
-		{
-			case 0:cout << "equal" << endl;break;
-			case 1:cout << "you win" << endl;break;
-			case 2:cout << "you lose" << endl;break;                         //print the results
-		}	
+		cout << "sum: " << computer_sum;
+		final_judge(computer_sum, player_sum, computer_card_number, player_card_number);
+	
 	}
  } 
  
@@ -137,22 +115,17 @@ void wash(int allcard[52]) //get the cards back and shuffle the cards
 	int i;
 	srand(time(NULL));
  	random_shuffle(allcard,allcard+52);
- 	for (int k=0;k<=10;k++)
- 	{
- 		print_card(allcard[k]);
-	 }
-	 cout<<endl;
 }
  
 void print_card(int card)                                             //print a single card
 {
  	switch(card/13)
 	 {
-	 	case 0:cout << " spade "; break;
-	 	case 1:cout << " hearts "; break;
-	 	case 2:cout << " diamond "; break;
-	 	case 3:cout << " club "; break;
-	 	case 4:cout << " club "; break;
+	 	case 0:cout << "spade "; break;
+	 	case 1:cout << "hearts "; break;
+	 	case 2:cout << "diamond "; break;
+	 	case 3:cout << "club "; break;
+	 	case 4:cout << "club "; break;
 	 	default:break;
 	  }
 	  switch(card % 13)
@@ -163,6 +136,7 @@ void print_card(int card)                                             //print a 
 	 	case 0:cout << "K"; break;
 	 	default:cout << card % 13; break;
 	  }
+	  cout << " ";
 }
  
 void print_cards(int cards[22],int start,int end)                                //print a set of cards
@@ -180,11 +154,11 @@ bool judge(float sum)                                            //judge whether
 	else return 0;	
 }
  
-int final_judge(float computer_sum, float player_sum, int computer_number, int player_number)
+void final_judge(float computer_sum, float player_sum, int computer_number, int player_number)
 {
- 	if (computer_sum>player_sum) return 2;                    //judge the final results
- 	else if (computer_sum<player_sum) return 1;
- 	if (computer_number>player_number) return 2;
- 	else if (computer_number<player_number) return 1;
- 	return 0;
+ 	if (computer_sum>player_sum) cout << " you lose" << endl << endl;                    //judge the final results
+ 	else if (computer_sum<player_sum) cout << "you win" << endl << endl;
+ 	else if (computer_number>player_number) cout << "you lose" << endl << endl;
+ 	else if (computer_number<player_number) cout << "you win" << endl << endl;
+ 	else cout << "equal";
 }
